@@ -1,0 +1,46 @@
+#include <iostream>
+using namespace std;
+
+unsigned short crc(const char* message, unsigned int length){
+  unsigned short remainder = 0;//*((unsigned short*) message);
+  unsigned short poly = 50115;
+  unsigned int cap = length*8-sizeof(remainder)*8;
+  unsigned int offset = 0;
+  while(1){
+  cout << "outer" << endl;
+  cout << remainder << endl;
+  //shift data  
+    while(remainder < 32768){
+      cout << "inner: " << endl;
+      cout << offset<< endl;
+      if (offset == cap){
+      	  cout << "worked: ";
+          remainder^=poly;
+  		  return remainder;
+      }
+      remainder = remainder << 1;
+      cout << remainder << endl;
+      //shift a bit in from the message
+      remainder |= (((*(message + offset/8)) >> (7-(offset%8))) & 1)<< 0;
+      offset++;
+      cout << remainder << endl;      
+    }
+    if (offset == cap){
+      	  cout << "worked: ";
+          remainder^=poly;
+  		  return remainder;
+     }
+    remainder^=poly;
+  }
+}
+
+
+int main() {
+	unsigned int x = 1753793475;
+	const char* message = "wwww";
+    cout << *((unsigned int*) message) << endl;
+	//cout << crc(message, 4);
+    cout << crc( (const char*) &x, 4);
+
+
+}
